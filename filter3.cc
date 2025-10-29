@@ -27,5 +27,5 @@ void filter3(vector<vector<vector<int>>> &vec, vector<vector<vector<int>>> &vec2
 			vec.at(i).at(j).at(BLUE) = (vec.at(i).at(j).at(BLUE) + vec2.at(i).at(j).at(BLUE)) / 2;
             //DEMO CODE END
         }
-    }
+	}	
 }
