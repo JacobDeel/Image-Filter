@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cmath>
+#include <algorithm>
 using namespace std;
 
 const int RED = 0, GREEN = 1, BLUE = 2;
@@ -24,22 +25,33 @@ void filter2(vector<vector<vector<int>>> &vec) {
 	for (int i = margin; i < margin + height; i++) {
 		for (int j = margin; j < margin + width; j++) {
 			// checks if the current pixel iterated is in the location where i want the watermark
-	//		if (i>= margin && i < margin + height && j>= margin && j < margin + width) {
+			if (i>= margin && i < margin + height && j>= margin && j < margin + width) {
 				vec.at(i).at(j).at(RED) = 150;
 				vec.at(i).at(j).at(GREEN) = 0;
 				vec.at(i).at(j).at(BLUE) = 255;
-	//		}
+			}
+		}
+	}
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
 			//DEMO CODE BEGIN
 			//How far are we from the center?
-			const double diag_length = hypot(rows/1.2,cols/1.2); //How many pixels is the diagonal from the center of the image to a corner?
+			const double diag_length = hypot(rows/2.0,cols/2.0); //How many pixels is the diagonal from the center of the image to a corner?
 			double distance = hypot(i-(rows/2.0),j-(cols/2.0));
-			double brightness = 1 - 2*(distance/diag_length); //0 brightness at corners, 200% brightness in middle
+			double brightness = 1 - pow(distance/diag_length, 3.0); //0 brightness at corners, 200% brightness in middle
+			brightness = max(0.0, min(1.0, brightness));
 			//cout << "i: " << i << " j: " << j << " bright: " << brightness << endl;
 			//cout << "diag_length: " << diag_length << " distance: " << distance << endl;
 			for (int k = 0; k < colors; k++) {
 				vec.at(i).at(j).at(k) *= brightness; //Lighten or darken each color by its distance from the center
-			}
-		//DEMO CODE END
+			}	//DEMO CODE END
+		}
+	}
+	for (int i = margin + 20; i < margin - 20 + height; i++) {
+		for (int j = margin + 20; j < margin - 20 + width; j++) {	
+				vec.at(i).at(j).at(RED) = 255;
+				vec.at(i).at(j).at(GREEN) = 0;
+				vec.at(i).at(j).at(BLUE) = 0;
 		}
 	}
 }
